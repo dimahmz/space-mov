@@ -12,11 +12,15 @@ const rentals = require("./routes/rentals");
 const users = require("./routes/users");
 const auth = require("./routes/auth");
 const home = require("./routes/home");
-
+const config = require("config");
 const request = require("./middleware/newConnection");
 
 const app = Express();
 
+if (!config.get("jwtKey")) {
+  console.error("jwtKey variable must be set");
+  process.exit(1);
+}
 //middlewares
 
 //built-in middleware
