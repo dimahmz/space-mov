@@ -11,9 +11,9 @@ router.post("/", async (req, res) => {
   if (error) return res.status(400).send(error.details[0].message);
   let user = await User.findOne({ email: req.body.email });
   if (user) return res.status(400).send("this user is already resitred!");
-
   try {
     user = new User(_.pick(req.body, ["name", "email", "password"]));
+    console.log(user.generateToken());
     const slat = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, slat);
     await user.save();
