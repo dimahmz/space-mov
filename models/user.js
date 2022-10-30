@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const config = require("config");
 const Joi = require("joi");
+const boolean = require("joi/lib/types/boolean");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -25,9 +26,13 @@ const userSchema = new mongoose.Schema({
     maxlength: 1024,
     required: true,
   },
+  admin: {
+    type: Boolean,
+    default: false,
+  },
 });
 userSchema.methods.generateToken = function () {
-  return jwt.sign({ _id: this._id }, config.get("jwtKey"));
+  return jwt.sign({ _id: this._id, admin: this.admin }, config.get("jwtKey"));
 };
 const User = mongoose.model("User", userSchema);
 
