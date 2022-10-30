@@ -4,6 +4,7 @@ const { Movie } = require("../models/movies");
 const { Costumer } = require("../models/costumers");
 const logger = require("debug")("app:start_up");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 //http protocols
 
@@ -12,7 +13,7 @@ router.get("/", async (req, res) => {
   return res.send(movies);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 

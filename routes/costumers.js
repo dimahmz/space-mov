@@ -1,8 +1,7 @@
 const express = require("express");
-
 const { Costumer, validate } = require("../models/costumers");
-
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 //http protocols
 
@@ -11,7 +10,7 @@ router.get("/", async (req, res) => {
   return res.send(costumer);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.send(error.details[0].message);
 
@@ -24,7 +23,7 @@ router.post("/", async (req, res) => {
   res.status(404).send("cant add this genre!");
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.send(error.details[0].message);
 
@@ -37,7 +36,7 @@ router.put("/:id", async (req, res) => {
   res.status(404).send("this Costumer doesn't exist!");
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   const costumer = await Costumer.findByIdAndRemove(req.body.id);
   if (costumer) return res.send(costumer);
   res.status(404).send("this Costumer doesn't exist!");

@@ -1,6 +1,7 @@
 const express = require("express");
 const { Genre, validate } = require("../models/genres");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 //http protocols
 
@@ -9,9 +10,9 @@ router.get("/", async (req, res) => {
   return res.send(Genres);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
-  if (error) return res.send(error.details[0].message);
+  if (error) return res.status(400).send(error.details[0].message);
 
   const name = req.body.name;
   let genre = new Genre({ name });
@@ -22,7 +23,7 @@ router.post("/", async (req, res) => {
   res.status(404).send("cant add this genre!");
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.send(error.details[0].message);
 
@@ -35,7 +36,7 @@ router.put("/:id", async (req, res) => {
   res.status(404).send("this genre doesn't exist!");
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   const genre = await Genre.findByIdAndRemove(req.params.id);
   if (genre) return res.send(genre);
   res.status(404).send("this genre doesn't exist!");

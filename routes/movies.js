@@ -4,6 +4,7 @@ const { Genre } = require("../models/genres");
 const mongoose = require("mongoose");
 const logger = require("debug")("app:start_up");
 const router = express.Router();
+const auth = require("../middleware/auth");
 
 //http protocols
 
@@ -19,7 +20,7 @@ router.get("/", async (req, res) => {
   return res.send(movies);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.send(error.details[0].message);
 
@@ -40,7 +41,7 @@ router.post("/", async (req, res) => {
   res.status(404).send("cant add this movie!");
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", auth, async (req, res) => {
   const { error } = validate(req.body);
   if (error) return res.send(error.details[0].message);
 
@@ -53,7 +54,7 @@ router.put("/:id", async (req, res) => {
   res.status(404).send("this movie doesn't exist!");
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", auth, async (req, res) => {
   const movie = await Movie.findByIdAndRemove(req.body.id);
   if (movie) return res.send(movie);
   res.status(404).send("this movie doesn't exist!");
