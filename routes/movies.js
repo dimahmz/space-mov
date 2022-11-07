@@ -5,18 +5,12 @@ const mongoose = require("mongoose");
 const logger = require("debug")("app:start_up");
 const router = express.Router();
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 //http protocols
 
 router.get("/", async (req, res) => {
-  const movies = await Movie.find().select({
-    title: 1,
-    _id: -1,
-    genre: {
-      name: 1,
-      _id: -1,
-    },
-  });
+  const movies = await Movie.find().select({title: 1,_id: -1,genre: {name: 1,_id: -1,},});
   return res.send(movies);
 });
 
@@ -54,7 +48,7 @@ router.put("/:id", auth, async (req, res) => {
   res.status(404).send("this movie doesn't exist!");
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   const movie = await Movie.findByIdAndRemove(req.body.id);
   if (movie) return res.send(movie);
   res.status(404).send("this movie doesn't exist!");

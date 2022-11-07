@@ -2,6 +2,7 @@ const express = require("express");
 const { Costumer, validate } = require("../models/costumers");
 const router = express.Router();
 const auth = require("../middleware/auth");
+const admin = require("../middleware/admin");
 
 //http protocols
 
@@ -36,7 +37,7 @@ router.put("/:id", auth, async (req, res) => {
   res.status(404).send("this Costumer doesn't exist!");
 });
 
-router.delete("/:id", auth, async (req, res) => {
+router.delete("/:id", [auth, admin], async (req, res) => {
   const costumer = await Costumer.findByIdAndRemove(req.body.id);
   if (costumer) return res.send(costumer);
   res.status(404).send("this Costumer doesn't exist!");
