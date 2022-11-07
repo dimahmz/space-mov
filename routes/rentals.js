@@ -19,13 +19,11 @@ router.post("/", auth, async (req, res) => {
 
   const costumer = await Costumer.findById(req.body.costumerId),
     movie = await Movie.findById(req.body.movieId);
-  // logger(costumer, movie);
-  if (!movie || !costumer)
-    return res.send.status(400)(
-      `this ${movie ? "costumer" : "movie"} gener doesn't exist `
-    );
-  if (movie.numberInstock == 0)
-    return res.status(400).send("movie is out of stock");
+
+  if (!movie || !costumer)return res.send.status(400)(`this ${movie ? "costumer" : "movie"} doesn't exist `);
+
+  if (movie.numberInstock == 0) return res.status(400).send("movie is out of stock");
+
   let rental = new Rental({
     costumer: {
       //_id is set, because mongoose will generate new one automatically
@@ -40,7 +38,9 @@ router.post("/", auth, async (req, res) => {
     },
     payment: req.body.payment,
   });
-  // two phase commit
+
+
+  // two phase commit!
   rental
     .save()
     .then(() => {
@@ -50,7 +50,7 @@ router.post("/", auth, async (req, res) => {
     })
     .catch((e) => {
       logger(e);
-      res.status(404).send("cant add this rental!");
+      res.status(500).send("Something failed");
       movie.numberInstock++;
       movie.save();
       Rental.findByIdAndDelete(rental._id);
