@@ -14,6 +14,7 @@ const auth = require("./routes/auth");
 const home = require("./routes/home");
 const config = require("config");
 const request = require("./middleware/newConnection");
+const error = require("./middleware/error");
 
 const app = Express();
 
@@ -41,6 +42,8 @@ app.use("/api/users", users);
 app.use("/api/auth", auth);
 app.use("/", home);
 
+app.use(error);
+
 // temlating engines
 app.set("view engine", "pug");
 app.set("views", "./views");
@@ -50,7 +53,7 @@ app.set("views", "./views");
 mongoose
   .connect("mongodb://localhost/vidly")
   .then(() => logger("connect succefully"))
-  .catch((err) => logger(err));
+  .catch((err) => logger(err.message));
 
 //starting the server
 
