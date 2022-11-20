@@ -61,10 +61,19 @@ app.set("views", "./views");
 
 // database connection
 
-mongoose
-  .connect("mongodb://localhost/vidly")
-  .then(() => logger("connect succefully"))
-  .catch((err) => logger(err.message));
+const mongoDbUri = `mongodb+srv://hamzaAdmin:${process.env.db_password}@cluster0.hutqdah.mongodb.net/vidly?retryWrites=true&w=majority`;
+try {
+  mongoose.connect(
+    mongoDbUri,
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    },
+    () => logger.info(" Mongoose is connected")
+  );
+} catch (e) {
+  logger.error(`MongoDB connection error: ${e.message}`);
+}
 
 //starting the server
 
