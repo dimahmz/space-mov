@@ -1,6 +1,6 @@
 const Express = require("express");
 const mongoose = require("mongoose");
-const logger = require("debug")("app:start_up");
+const winston = require("winston");
 
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
@@ -15,13 +15,24 @@ const home = require("./routes/home");
 const config = require("config");
 const request = require("./middleware/newConnection");
 const error = require("./middleware/error");
+const logger = require("./middleware/logger");
 
 const app = Express();
 
+if (process.env.NODE_ENV !== "production") {
+  logger.add(
+    new winston.transports.Console({
+      format: winston.format.simple(),
+      level: "debug",
+    })
+  );
+}
+
 if (!config.get("jwtKey")) {
-  console.error("jwtKey variable must be set");
+  logger.error("jwtKey variable must be set");
   process.exit(1);
 }
+
 //middlewares
 
 //built-in middleware
@@ -58,6 +69,6 @@ mongoose
 //starting the server
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => logger(`Listening on port ${port}...`));
+app.listen(port, () => logger.info(`Listening on port ${port}...`));
 
 module.exports = app;
