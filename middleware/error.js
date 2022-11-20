@@ -1,6 +1,5 @@
-const logger = require("debug")("app:start_up");
-
+const  logger =require("./logger");
 module.exports = function (err, req, res, next) {
-  logger(err.message);
-  res.status(500).send("somthing failed");
+  logger.error(err.message,err);
+  res.status(500).send("something failed");
 };

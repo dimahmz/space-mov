@@ -3,8 +3,9 @@ const { User, validate } = require("../models/user"),
   _ = require("lodash"),
   bcrypt = require("bcrypt"),
   router = express.Router(),
-  auth = require("../middleware/auth");
-
+  auth = require("../middleware/auth"),
+  logger = require("../middleware/logger");
+require("express-async-errors");
 
 router.post("/me", auth, async (req, res) => {
   const user = await User.findById(req.user._id).select("-password");
@@ -28,10 +29,11 @@ router.post("/", async (req, res) => {
     await user.save();
 
     const token = user.generateToken();
-    return res.header("x-auth-token", token).send(_.pick(user, ["name", "email"]));
-
-  } catch (e) {    
-    console.log(e.message);
+    return res
+      .header("x-auth-token", token)
+      .send(_.pick(user, ["name", "email"]));
+  } catch (e) {
+    logger.error(e.message);
     return res.status(404).send(e.message);
   }
 });

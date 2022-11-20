@@ -1,14 +1,16 @@
 const express = require("express");
+require("express-async-errors");
 const { Genre, validate } = require("../models/genres");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+// const asyncMiddleware = require("../middleware/async");
 
 //http protocols
 
 router.get("/", async (req, res) => {
-  const Genres = await Genre.find().select({ name: 1, _id: -1 });
-  return res.send(Genres);
+  const genres = await Genre.find().select({ name: 1, _id: -1 });
+  res.send(genres);
 });
 
 router.post("/", auth, async (req, res) => {

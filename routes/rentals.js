@@ -5,6 +5,7 @@ const { Costumer } = require("../models/costumers");
 const logger = require("debug")("app:start_up");
 const router = express.Router();
 const auth = require("../middleware/auth");
+require("express-async-errors");
 
 //http protocols
 
@@ -20,9 +21,13 @@ router.post("/", auth, async (req, res) => {
   const costumer = await Costumer.findById(req.body.costumerId),
     movie = await Movie.findById(req.body.movieId);
 
-  if (!movie || !costumer)return res.send.status(400)(`this ${movie ? "costumer" : "movie"} doesn't exist `);
+  if (!movie || !costumer)
+    return res.send.status(400)(
+      `this ${movie ? "costumer" : "movie"} doesn't exist `
+    );
 
-  if (movie.numberInstock == 0) return res.status(400).send("movie is out of stock");
+  if (movie.numberInstock == 0)
+    return res.status(400).send("movie is out of stock");
 
   let rental = new Rental({
     costumer: {
@@ -38,7 +43,6 @@ router.post("/", auth, async (req, res) => {
     },
     payment: req.body.payment,
   });
-
 
   // two phase commit!
   rental

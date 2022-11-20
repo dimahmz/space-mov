@@ -2,15 +2,19 @@ const express = require("express");
 const { Movie, validate } = require("../models/movies");
 const { Genre } = require("../models/genres");
 const mongoose = require("mongoose");
-const logger = require("debug")("app:start_up");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
+require("express-async-errors");
 
 //http protocols
 
 router.get("/", async (req, res) => {
-  const movies = await Movie.find().select({title: 1,_id: -1,genre: {name: 1,_id: -1,},});
+  const movies = await Movie.find().select({
+    title: 1,
+    _id: -1,
+    genre: { name: 1, _id: -1 },
+  });
   return res.send(movies);
 });
 

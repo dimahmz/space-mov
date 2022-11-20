@@ -1,6 +1,6 @@
-const logger = require("debug")("app:start_up");
+const logger = require("./logger");
 function request(req, resp, next) {
-  logger(`request on ${req.url}`);
+  logger.debug(`request on ${req.url}`);
   next();
 }
 
