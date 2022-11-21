@@ -19,19 +19,32 @@ const logger = require("./middleware/logger");
 
 const app = Express();
 
+
 if (process.env.NODE_ENV !== "production") {
   logger.add(
     new winston.transports.Console({
       format: winston.format.simple(),
       level: "debug",
     })
-  );
-}
+    );
+  }
 
-if (!config.get("jwtKey")) {
-  logger.error("jwtKey variable must be set");
+process.on("uncaughtException", (er)=>{
+  logger.error(er.message,er);
   process.exit(1);
-}
+});
+
+process.on("unhandledRejection", (er)=>{
+  logger.error(er.message,er);
+  process.exit(1);
+});
+  
+  if (!config.get("jwtKey")) {
+    logger.error("jwtKey variable must be set");
+    process.exit(1);
+  }
+
+
 
 //middlewares
 
