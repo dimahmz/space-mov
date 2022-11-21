@@ -5,7 +5,6 @@ const mongoose = require("mongoose");
 const router = express.Router();
 const auth = require("../middleware/auth");
 const admin = require("../middleware/admin");
-require("express-async-errors");
 
 //http protocols
 

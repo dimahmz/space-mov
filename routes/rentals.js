@@ -5,7 +5,6 @@ const { Costumer } = require("../models/costumers");
 const logger = require("debug")("app:start_up");
 const router = express.Router();
 const auth = require("../middleware/auth");
-require("express-async-errors");
 
 //http protocols
 

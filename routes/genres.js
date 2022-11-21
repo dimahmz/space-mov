@@ -1,5 +1,4 @@
 const express = require("express");
-require("express-async-errors");
 const { Genre, validate } = require("../models/genres");
 const router = express.Router();
 const auth = require("../middleware/auth");
@@ -9,6 +8,7 @@ const admin = require("../middleware/admin");
 //http protocols
 
 router.get("/", async (req, res) => {
+  throw new Error("expected error");
   const genres = await Genre.find().select({ name: 1, _id: -1 });
   res.send(genres);
 });

@@ -3,7 +3,6 @@ const { User } = require("../models/user"),
   bcrypt = require("bcrypt"),
   Joi = require("joi"),
   router = express.Router();
-require("express-async-errors");
 
 router.post("/", async (req, res) => {
   const { error } = validate(req.body);
