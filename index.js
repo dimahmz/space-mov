@@ -2,9 +2,11 @@ const Express = require("express");
 const app = Express();
 const error = require("./middleware/error");
 const logger = require("./middleware/logger");
+require('dotenv').config();
 
 app.use(Express.json());
 
+console.log(process.env);
 //logging errors
 require("./startup/logging")();
 //app routes
